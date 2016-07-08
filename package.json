@@ -1,0 +1,29 @@
+{
+  "name": "react-ocean-koa",
+  "version": "1.0.0",
+  "description": "isomorphic react redux app, using koa",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LukeLin/react-ocean-koa.git"
+  },
+  "keywords": [
+    "koa",
+    "react",
+    "isomorphic",
+    "redux"
+  ],
+  "author": "LukeLin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LukeLin/react-ocean-koa/issues"
+  },
+  "homepage": "https://github.com/LukeLin/react-ocean-koa#readme",
+  "dependencies": {
+    "babel-register": "^6.9.0",
+    "koa": "^2.0.0"
+  }
+}
