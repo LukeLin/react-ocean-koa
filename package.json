@@ -1,29 +1,83 @@
 {
-  "name": "react-ocean-koa",
-  "version": "1.0.0",
-  "description": "isomorphic react redux app, using koa",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LukeLin/react-ocean-koa.git"
-  },
-  "keywords": [
-    "koa",
-    "react",
-    "isomorphic",
-    "redux"
-  ],
+  "name": "react-ocean",
+  "license": "ISC",
+  "version": "0.5.0",
   "author": "LukeLin",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/LukeLin/react-ocean-koa/issues"
-  },
-  "homepage": "https://github.com/LukeLin/react-ocean-koa#readme",
+  "keywords": [
+    "react",
+    "redux",
+    "webpack",
+    "babel",
+    "immutable",
+    "isomophic react",
+    "universial react"
+  ],
   "dependencies": {
+    "babel-core": "^6.10.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.10.3",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
     "babel-register": "^6.9.0",
-    "koa": "^2.0.0"
+    "babel-runtime": "^6.9.2",
+    "fastclick": "^1.0.6",
+    "immutable": "^3.8.1",
+    "isomorphic-fetch": "^2.2.1",
+    "koa": "^1.2.0",
+    "koa-bodyparser": "^2.2.0",
+    "koa-compress": "^1.0.9",
+    "koa-cors": "0.0.16",
+    "koa-ejs": "^3.0.0",
+    "koa-logger": "^1.3.0",
+    "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0",
+    "react": "^15.2.0",
+    "react-addons-pure-render-mixin": "^15.2.0",
+    "react-dom": "^15.2.0",
+    "react-immutable-proptypes": "^1.7.1",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-immutablejs": "0.0.8",
+    "redux-thunk": "^2.1.0",
+    "secure-filters": "^1.0.5",
+    "serve-favicon": "^2.3.0",
+    "socket.io": "^1.4.8"
+  },
+  "babel": {
+    "plugins": [
+      "transform-es2015-modules-commonjs",
+      "transform-runtime"
+    ],
+    "presets": [
+      "react"
+    ]
+  },
+  "description": "isomophic-react-redux-starter",
+  "devDependencies": {
+    "babel-loader": "^6.2.4",
+    "babel-preset-react-hmre": "^1.1.1",
+    "css-loader": "^0.23.1",
+    "del": "^2.2.1",
+    "expose-loader": "^0.7.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "gulp": ">=3.9.0",
+    "happypack": "^2.1.1",
+    "json-loader": "^0.5.4",
+    "progress-bar-webpack-plugin": "^1.8.0",
+    "react-addons-perf": "^15.2.0",
+    "redux-logger": "^2.6.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.1.0-beta.13",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.0",
+    "why-did-you-update": "0.0.8"
+  },
+  "scripts": {
+    "build:dev": "set NODE_ENV=development && gulp build-dev",
+    "start": "node index.js",
+    "build": "npm run build:prod && npm run build:dev",
+    "build:prod": "npm install && set NODE_ENV=production && gulp build"
   }
 }
