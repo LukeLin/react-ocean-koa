@@ -4,12 +4,16 @@ export default function(router) {
      * @param  {Function} Router
      * @return {Function}
      */
-    router.get('/', function* () {
-        yield this.render('index');
+    router.get('/', async function (ctx, next) {
+        const title = 'koa2 title';
+
+        await ctx.render('index', {
+            title
+        })
     });
 
-    router.get('*', function* () {
-        yield this.render('index');
+    router.get('*', async function (ctx) {
+        ctx.body = 'test';
     });
 
     return router.routes();

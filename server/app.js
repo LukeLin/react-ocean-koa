@@ -11,14 +11,13 @@ import bodyParser from 'koa-bodyparser';
 import routes from './routes/pages';
 import socketIO from 'socket.io';
 import sockets from './sockets';
-import path from 'path';
 import http from 'http';
+import config from '../package.json';
 
 const app = new Koa();
 
 app.use(logger());
-app.use(cors());
-app.use(convert(json()))
+app.use(json());
 app.use(bodyParser());
 app.use(koaCompress({ flush: zlib.Z_SYNC_FLUSH }));
 app.use(views('views', {
@@ -41,13 +40,13 @@ app.use(routes(new Router()));
 app.use(async (ctx) => {
     ctx.status = 404;
     await ctx.render('404')
-})
+});
 
 app.on('error', function (err, ctx) {
     logger.error('server error', err, ctx);
 });
 
-const port = parseInt(config.port || '3000');
+const port = parseInt(config.port || '3333');
 const server = http.createServer(app.callback());
 const io = socketIO(server);
 sockets(io);
