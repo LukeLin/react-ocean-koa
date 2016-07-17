@@ -3,38 +3,44 @@ import Router from 'koa-router';
 import serveStatic from 'koa-static';
 import koaCompress from 'koa-compress';
 import zlib from 'zlib'
-import views from 'koa-views';
 import cors from 'koa-cors';
 import logger from 'koa-logger';
 import json from 'koa-json'
 import bodyParser from 'koa-bodyparser';
-import routes from './routes/pages';
+import routes from './routes';
 import socketIO from 'socket.io';
 import sockets from './sockets';
 import http from 'http';
 import config from '../package.json';
+import reactRender from './libs/createHTMLString';
+import Immutable from 'immutable';
+import path from 'path';
 
 const app = new Koa();
 
-app.use(logger());
+// app.use(logger());
 app.use(json());
 app.use(bodyParser());
 app.use(koaCompress({ flush: zlib.Z_SYNC_FLUSH }));
-app.use(views('views', {
-    root: __dirname + '/views',
-    default: 'ejs'
-}));
 
-app.use(async (next) => {
+app.use(async (ctx, next) => {
     var start = new Date;
     await next();
     var ms = new Date - start;
-    console.log('%s %s - %s', this.method, this.url, ms);
+    console.log('%s %s - %s', ctx.method, ctx.url, ms);
 });
 
-app.use(serveStatic('./public'));
-
-app.use(routes(new Router()));
+app.use(serveStatic(path.join(__dirname, '../public'), {
+    maxage: 86400000
+}));
+app.use(reactRender({
+    transformer(data){
+        return Immutable.fromJS(data);
+    }
+}));
+let router = new Router();
+app.use(routes(router))
+    .use(router.allowedMethods());
 
 // 404
 app.use(async (ctx) => {
@@ -43,7 +49,8 @@ app.use(async (ctx) => {
 });
 
 app.on('error', function (err, ctx) {
-    logger.error('server error', err, ctx);
+    // logger.error('server error', err, ctx);
+    console.error('server error', err, ctx)
 });
 
 const port = parseInt(config.port || '3333');

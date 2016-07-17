@@ -1,20 +1,29 @@
-export default function(router) {
-    /**
-     * 首页路由
-     * @param  {Function} Router
-     * @return {Function}
-     */
-    router.get('/', async function (ctx, next) {
-        const title = 'koa2 title';
+import React from 'react';
+import rootReducer from '../../../common/pages/index/indexReducers';
+import Page from '../../../common/pages/index';
 
-        await ctx.render('index', {
-            title
-        })
+let fakeData = {
+    visibilityFilter: 'SHOW_ALL',
+    todos: [
+        {
+            text: 'one',
+            completed: false
+        },
+        {
+            text: 'two',
+            completed: true
+        }
+    ]
+};
+
+export default function (ctx, next) {
+    ctx.renderReactHTML({
+        component: <Page/>,
+        locals: {
+            appName: 'index',
+            title: 'index page'
+        },
+        data: fakeData,
+        rootReducer
     });
-
-    router.get('*', async function (ctx) {
-        ctx.body = 'test';
-    });
-
-    return router.routes();
-}
+};

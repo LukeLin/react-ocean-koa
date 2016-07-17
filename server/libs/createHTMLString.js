@@ -8,57 +8,68 @@ import SecureFilters from 'secure-filters';
 
 import configureStore from '../../common/store/index';
 import App from '../../common/App.jsx';
+import config from '../config/config.json';
 
 const defaultTemplate = fs.readFileSync(__dirname + '/../views/index.html', 'utf8');
 
-export default function createRenderString(req, opts = {}) {
-    let {
-        template = '',
-        component = '',
-        renderData = {},
-        rootReducer = (() => {}),
-        locals = {},
-        pageConfig = {}
-    } = opts;
-    let transformedData = Immutable.fromJS(renderData);
-    rootReducer = typeof rootReducer === 'object' ? createReducer(transformedData, rootReducer) : rootReducer;
-    let store = configureStore(transformedData, rootReducer);
-    let html = '';
-    try {
-        html = renderToString((
-            <Provider store={ store }>
-                <App>
-                    { component }
-                </App>
-            </Provider>
-        ));
-    } catch (ex) {
-        html = '';
-        console.error(ex.message);
-    }
+export default function reactRender(middlewareConfig = {}) {
+    return async function(ctx, next){
+        ctx.renderReactHTML = function(opts = {}){
+            let {
+                template = '',
+                component = '',
+                data = {},
+                rootReducer = (() => {}),
+                locals = {},
+                pageConfig = {},
+                needTransform = true
+            } = opts;
+            let transformedData = (typeof middlewareConfig.transformer === 'function' && needTransform)
+                ? middlewareConfig.transformer(data) : data;
+            let store = configureStore(transformedData, rootReducer);
+            let html = '';
+            try {
+                html = renderToString((
+                    <Provider store={ store }>
+                        <App>
+                            { component }
+                        </App>
+                    </Provider>
+                ));
+            } catch (ex) {
+                html = 'internal server error: \n' + ex.message;
+                console.error(ex.message);
+            }
 
-    let debug = req.query.debug && (req.query.debug === config.application.debugName);
-    let state = SecureFilters.jsObj(renderData);
-    let version = config.application.version;
-    let jsVersion = process.env.NODE_ENV === 'production' && version && version.js || '';
-    jsVersion = jsVersion ? `app-${ jsVersion }` : 'app';
-    template = template || defaultTemplate;
+            let debug = ctx.query.debug && (ctx.query.debug === config.application.debugName);
+            let state = SecureFilters.jsObj(data);
+            let version = config.application.version;
+            let jsVersion = process.env.NODE_ENV === 'production' && version && version.js || '';
+            jsVersion = jsVersion ? `app-${ jsVersion }` : 'app';
+            template = template || middlewareConfig.defaultTemplate || defaultTemplate;
 
-    let pageStr = ejs.render(template, Object.assign({
-        html: html,
-        state: state,
-        appName: 'index',
-        title: '',
-        test: process.env.NODE_ENV !== 'production',
-        debug: debug,
-        appConfig: SecureFilters.jsObj(pageConfig),
-        version: {
-            js: jsVersion,
-            css: version && version.css
-        }
-    }, locals), {
-        compileDebug: false
-    });
+            let finalLocals = Object.assign({
+                html: html,
+                state: state,
+                appName: 'index',
+                title: '',
+                test: process.env.NODE_ENV !== 'production',
+                debug: debug,
+                appConfig: SecureFilters.jsObj(pageConfig),
+                version: {
+                    js: jsVersion,
+                    css: version && version.css
+                }
+            }, typeof middlewareConfig.locals === 'object' && middlewareConfig.locals, locals);
 
-    return pageStr;
+            let pageStr = ejs.render(template, finalLocals, {
+                compileDebug: false
+            });
+
+            ctx.status = 200;
+            ctx.body = pageStr;
+        };
+
+        await next();
+    };
 }

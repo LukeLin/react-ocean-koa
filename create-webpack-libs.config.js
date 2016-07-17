@@ -129,7 +129,7 @@ module.exports = function(DEBUG){
             libs: libs
         },
         output: {
-            path: './public/',
+            path: './public/static/',
             filename: DEBUG ? "./js/[name]-debug.js" : "./js/[name]-min.js",
             chunkFilename: DEBUG ? "./js/[name]-debug.js" : "./js/[name]-min.js",
             publicPath: '',

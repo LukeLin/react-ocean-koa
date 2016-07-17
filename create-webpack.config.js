@@ -105,7 +105,7 @@ module.exports = function (DEBUG) {
         target: 'web',
         entry: getPagesNames(__dirname + '/client/js/pages'),
         output: {
-            path: __dirname + '/public/',
+            path: __dirname + '/public/static/',
             filename: DEBUG ? "./js/debug/[name].js" : "./js/min/[name].js",
             chunkFilename: DEBUG ? "./js/debug/[name].js" : "./js/min/[name].js",
             publicPath: '/static',
